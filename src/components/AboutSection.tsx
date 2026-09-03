@@ -3,10 +3,11 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ABOUT_DECORATIVE } from "../data/portfolioData";
 import { AnimatedText } from "./AnimatedText";
 import { ContactButton } from "./ContactButton";
+import { useLanguage } from "../context/useLanguage";
 
 export const AboutSection: React.FC = () => {
+  const { t } = useLanguage();
   const shouldReduceMotion = useReducedMotion();
-
   const ease = [0.25, 0.1, 0.25, 1];
 
   return (
@@ -92,22 +93,23 @@ export const AboutSection: React.FC = () => {
             style={{ fontSize: "clamp(3rem, 12vw, 160px)" }}
             className="hero-heading font-black uppercase text-center leading-none tracking-tight select-none"
           >
-            About me
+            {t.about.heading}
           </h2>
         </motion.div>
 
-        {/* Spacing: Heading -> paragraph (gap-10 sm:gap-14 md:gap-16) */}
+        {/* Spacing */}
         <div className="h-10 sm:h-14 md:h-16" />
 
         {/* Animated Paragraph */}
         <div className="max-w-[560px] px-4">
           <AnimatedText
-            text="With more than five years of experience in design, i focus on branding, web design, and user experience, i truly enjoy working with businesses that aim to stand out and present their best image. Let's build something incredible together!"
+            key={t.about.text}
+            text={t.about.text}
             className="text-[#D7E2EA]"
           />
         </div>
 
-        {/* Spacing: Paragraph -> Contact button (gap-16 sm:gap-20 md:gap-24) */}
+        {/* Spacing */}
         <div className="h-16 sm:h-20 md:h-24" />
 
         {/* Contact Button */}

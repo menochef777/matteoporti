@@ -4,8 +4,11 @@ import { Navbar } from "./Navbar";
 import { ContactButton } from "./ContactButton";
 import { Magnet } from "./Magnet";
 import { HERO_ASSETS } from "../data/portfolioData";
+import { useLanguage } from "../context/useLanguage";
 
 export const HeroSection: React.FC = () => {
+  const { t } = useLanguage();
+
   return (
     <section className="relative w-full min-h-[100svh] flex flex-col justify-between overflow-hidden bg-[#0C0C0C]">
       {/* 01: Top Navigation */}
@@ -19,8 +22,8 @@ export const HeroSection: React.FC = () => {
           transition={{ duration: 0.7, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
           className="w-full text-center"
         >
-          <h1 className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-[14vw] sm:text-[15vw] md:text-[16vw] lg:text-[17.5vw] select-none">
-            Hi, I’m Matteo
+          <h1 className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-[13.5vw] sm:text-[14.5vw] md:text-[15.5vw] lg:text-[17vw] select-none">
+            {t.hero.greeting}
           </h1>
         </motion.div>
       </div>
@@ -30,7 +33,7 @@ export const HeroSection: React.FC = () => {
         <Magnet padding={150} strength={3} className="w-full">
           <motion.img
             src={HERO_ASSETS.portrait}
-            alt="Matteo - 3D Creator"
+            alt="Matteo - Website Creator"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
@@ -49,7 +52,7 @@ export const HeroSection: React.FC = () => {
           style={{ fontSize: "clamp(0.75rem, 1.4vw, 1.5rem)" }}
           className="uppercase font-light tracking-wide leading-snug text-[#D7E2EA] max-w-[160px] sm:max-w-[220px] md:max-w-[260px] select-none"
         >
-          a 3d creator driven by crafting striking and unforgettable projects
+          {t.hero.subtitle}
         </motion.p>
 
         <motion.div

@@ -2,8 +2,10 @@ import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { PROJECTS } from "../data/portfolioData";
 import { ProjectCard } from "./ProjectCard";
+import { useLanguage } from "../context/useLanguage";
 
 export const ProjectsSection: React.FC = () => {
+  const { t } = useLanguage();
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -21,7 +23,7 @@ export const ProjectsSection: React.FC = () => {
           style={{ fontSize: "clamp(3rem, 12vw, 160px)" }}
           className="hero-heading font-black uppercase text-center leading-none tracking-tight select-none"
         >
-          Project
+          {t.projects.heading}
         </motion.h2>
       </div>
 

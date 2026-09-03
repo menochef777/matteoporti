@@ -1,14 +1,20 @@
 import React from "react";
+import { useLanguage } from "../context/useLanguage";
 
 interface ContactButtonProps {
   className?: string;
   onClick?: () => void;
+  label?: string;
 }
 
 export const ContactButton: React.FC<ContactButtonProps> = ({
   className = "",
   onClick,
+  label,
 }) => {
+  const { t } = useLanguage();
+  const buttonLabel = label || t.hero.contactBtn;
+
   return (
     <a
       href="#contact"
@@ -23,7 +29,7 @@ export const ContactButton: React.FC<ContactButtonProps> = ({
       }}
       className={`inline-flex items-center justify-center rounded-full text-white font-medium uppercase tracking-widest text-xs sm:text-sm md:text-base px-8 py-3 sm:px-10 sm:py-3.5 md:px-12 md:py-4 transition-all duration-300 hover:brightness-115 active:scale-[0.98] cursor-pointer select-none whitespace-nowrap ${className}`}
     >
-      Contact Me
+      {buttonLabel}
     </a>
   );
 };

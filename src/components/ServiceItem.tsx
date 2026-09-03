@@ -1,9 +1,9 @@
 import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import type { Service } from "../data/portfolioData";
+import type { ServiceTranslation } from "../data/translations";
 
 interface ServiceItemProps {
-  service: Service;
+  service: ServiceTranslation;
   index: number;
 }
 

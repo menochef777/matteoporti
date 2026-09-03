@@ -1,9 +1,10 @@
 import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { SERVICES } from "../data/portfolioData";
+import { useLanguage } from "../context/useLanguage";
 import { ServiceItem } from "./ServiceItem";
 
 export const ServicesSection: React.FC = () => {
+  const { t } = useLanguage();
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -21,12 +22,12 @@ export const ServicesSection: React.FC = () => {
           style={{ fontSize: "clamp(3rem, 12vw, 160px)" }}
           className="font-black uppercase text-center text-[#0C0C0C] leading-none tracking-tight mb-16 sm:mb-20 md:mb-28 select-none"
         >
-          Services
+          {t.services.heading}
         </motion.h2>
 
         {/* Service List */}
         <div className="flex flex-col border-t border-[#0C0C0C]/15 w-full">
-          {SERVICES.map((service, index) => (
+          {t.services.items.map((service, index) => (
             <ServiceItem
               key={service.number}
               service={service}

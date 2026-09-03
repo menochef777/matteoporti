@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import type { Project } from "../data/portfolioData";
 import { LiveProjectButton } from "./LiveProjectButton";
+import { useLanguage } from "../context/useLanguage";
 
 interface ProjectCardProps {
   project: Project;
@@ -14,6 +15,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   index,
   totalCards,
 }) => {
+  const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
 
@@ -27,6 +29,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   const scale = useTransform(scrollYProgress, [0, 1], [1, targetScale]);
 
   const topOffset = index * 28;
+  const categoryLabel =
+    project.category === "Client"
+      ? t.projects.categoryClient
+      : t.projects.categoryPersonal;
 
   return (
     <div
@@ -51,7 +57,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
             <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-4">
               <span className="text-xs sm:text-sm font-light uppercase tracking-widest text-[#D7E2EA]/60 select-none">
-                {project.category}
+                {categoryLabel}
               </span>
               <h3 className="text-base sm:text-xl md:text-2xl lg:text-3xl font-medium uppercase text-[#D7E2EA] tracking-wide leading-tight">
                 {project.name}
