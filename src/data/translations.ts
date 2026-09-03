@@ -44,7 +44,7 @@ export const TRANSLATIONS: Record<Language, ContentTranslation> = {
       contact: "Contato",
     },
     hero: {
-      greeting: "Hi, I’m Matteo",
+      greeting: "Olá, sou o Matteo",
       subtitle: "um criador de websites focado em criar projetos marcantes e inesquecíveis",
       contactBtn: "Fale Comigo",
     },
@@ -162,7 +162,7 @@ export const TRANSLATIONS: Record<Language, ContentTranslation> = {
       contact: "Contacto",
     },
     hero: {
-      greeting: "Hi, I’m Matteo",
+      greeting: "Hola, soy Matteo",
       subtitle: "un creador de sitios web enfocado en crear proyectos impactantes e inolvidables",
       contactBtn: "Contáctame",
     },
