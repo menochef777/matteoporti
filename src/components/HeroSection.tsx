@@ -32,8 +32,8 @@ export const HeroSection: React.FC = () => {
       </div>
 
       {/* 03: Central 3D Portrait */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:top-auto md:translate-y-0 md:bottom-0 z-20 pointer-events-none w-[260px] sm:w-[320px] md:w-[380px] lg:w-[440px]">
-        <Magnet padding={150} strength={3} className="w-full">
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:top-auto md:translate-y-0 md:bottom-0 z-20 pointer-events-none w-[340px] sm:w-[440px] md:w-[560px] lg:w-[680px] xl:w-[760px] max-w-[95vw]">
+        <Magnet padding={150} strength={3} className="w-full flex justify-center">
           <motion.img
             src={HERO_ASSETS.portrait}
             alt="Matteo - Website Creator"
