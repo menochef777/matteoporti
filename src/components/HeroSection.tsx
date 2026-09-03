@@ -20,7 +20,7 @@ export const HeroSection: React.FC = () => {
           className="w-full text-center"
         >
           <h1 className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-[14vw] sm:text-[15vw] md:text-[16vw] lg:text-[17.5vw] select-none">
-            Hi, I’m Jack
+            Hi, I’m Matteo
           </h1>
         </motion.div>
       </div>
@@ -30,7 +30,7 @@ export const HeroSection: React.FC = () => {
         <Magnet padding={150} strength={3} className="w-full">
           <motion.img
             src={HERO_ASSETS.portrait}
-            alt="Jack - 3D Creator"
+            alt="Matteo - 3D Creator"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
