@@ -50,16 +50,16 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         {/* Top Row Header */}
         <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4 pb-3 sm:pb-4 border-b border-[#D7E2EA]/20">
           {/* Left info: Number, Category, Name */}
-          <div className="flex items-center gap-3 sm:gap-6 md:gap-8">
-            <span className="text-3xl sm:text-4xl md:text-5xl font-black text-[#D7E2EA] leading-none select-none">
+          <div className="flex items-center gap-3 sm:gap-5 md:gap-7">
+            <span className="text-2xl sm:text-3xl md:text-4xl font-black text-[#D7E2EA] leading-none select-none">
               {project.number}
             </span>
 
-            <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-4">
-              <span className="text-xs sm:text-sm font-light uppercase tracking-widest text-[#D7E2EA]/60 select-none">
+            <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-3">
+              <span className="text-[11px] sm:text-xs font-light uppercase tracking-widest text-[#D7E2EA]/60 select-none">
                 {categoryLabel}
               </span>
-              <h3 className="text-base sm:text-xl md:text-2xl lg:text-3xl font-medium uppercase text-[#D7E2EA] tracking-wide leading-tight">
+              <h3 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-medium uppercase text-[#D7E2EA] tracking-wide leading-tight">
                 {project.name}
               </h3>
             </div>

@@ -29,7 +29,7 @@ export const Navbar: React.FC = () => {
             <a
               key={item.href}
               href={item.href}
-              className="uppercase font-medium tracking-wide text-[#D7E2EA] text-sm md:text-lg lg:text-[1.4rem] transition-opacity duration-200 hover:opacity-70"
+              className="uppercase font-medium tracking-wider text-[#D7E2EA] text-xs sm:text-sm md:text-[0.95rem] lg:text-[1.05rem] transition-opacity duration-200 hover:opacity-70"
             >
               {item.label}
             </a>

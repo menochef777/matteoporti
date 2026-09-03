@@ -22,14 +22,17 @@ export const HeroSection: React.FC = () => {
           transition={{ duration: 0.7, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
           className="w-full text-center"
         >
-          <h1 className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-[13.5vw] sm:text-[14.5vw] md:text-[15.5vw] lg:text-[17vw] select-none">
+          <h1
+            style={{ fontSize: "clamp(2.4rem, 7vw, 105px)" }}
+            className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full select-none"
+          >
             {t.hero.greeting}
           </h1>
         </motion.div>
       </div>
 
       {/* 03: Central 3D Portrait */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:top-auto md:translate-y-0 md:bottom-0 z-20 pointer-events-none w-[280px] sm:w-[360px] md:w-[440px] lg:w-[520px]">
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:top-auto md:translate-y-0 md:bottom-0 z-20 pointer-events-none w-[260px] sm:w-[320px] md:w-[380px] lg:w-[440px]">
         <Magnet padding={150} strength={3} className="w-full">
           <motion.img
             src={HERO_ASSETS.portrait}
@@ -49,8 +52,8 @@ export const HeroSection: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
-          style={{ fontSize: "clamp(0.75rem, 1.4vw, 1.5rem)" }}
-          className="uppercase font-light tracking-wide leading-snug text-[#D7E2EA] max-w-[160px] sm:max-w-[220px] md:max-w-[260px] select-none"
+          style={{ fontSize: "clamp(0.75rem, 1.1vw, 1.15rem)" }}
+          className="uppercase font-light tracking-wide leading-snug text-[#D7E2EA] max-w-[180px] sm:max-w-[240px] md:max-w-[320px] select-none"
         >
           {t.hero.subtitle}
         </motion.p>

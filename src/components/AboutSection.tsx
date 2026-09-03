@@ -90,7 +90,7 @@ export const AboutSection: React.FC = () => {
           className="w-full"
         >
           <h2
-            style={{ fontSize: "clamp(3rem, 12vw, 160px)" }}
+            style={{ fontSize: "clamp(2rem, 5.5vw, 80px)" }}
             className="hero-heading font-black uppercase text-center leading-none tracking-tight select-none"
           >
             {t.about.heading}

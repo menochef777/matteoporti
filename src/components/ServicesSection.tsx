@@ -19,8 +19,8 @@ export const ServicesSection: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "50px" }}
           transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-          style={{ fontSize: "clamp(3rem, 12vw, 160px)" }}
-          className="font-black uppercase text-center text-[#0C0C0C] leading-none tracking-tight mb-16 sm:mb-20 md:mb-28 select-none"
+          style={{ fontSize: "clamp(2rem, 5.5vw, 80px)" }}
+          className="font-black uppercase text-center text-[#0C0C0C] leading-none tracking-tight mb-10 sm:mb-14 md:mb-16 select-none"
         >
           {t.services.heading}
         </motion.h2>
