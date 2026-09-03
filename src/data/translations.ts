@@ -50,7 +50,7 @@ export const TRANSLATIONS: Record<Language, ContentTranslation> = {
     },
     about: {
       heading: "Sobre mim",
-      text: "Com mais de cinco anos de experiência em design e desenvolvimento web, meu foco é criar websites modernos, branding e experiências digitais de alto nível. Adoro colaborar com marcas que buscam se destacar e apresentar sua melhor versão no digital. Vamos construir algo incrível juntos!",
+      text: "Com mais de 2 anos de experiência em design e desenvolvimento web, meu foco é criar websites modernos, branding e experiências digitais de alto nível. Adoro colaborar com marcas que buscam se destacar e apresentar sua melhor versão no digital. Vamos construir algo incrível juntos!",
       contactBtn: "Fale Comigo",
     },
     services: {
@@ -109,7 +109,7 @@ export const TRANSLATIONS: Record<Language, ContentTranslation> = {
     },
     about: {
       heading: "About me",
-      text: "With more than five years of experience in design and web development, i focus on branding, high-end websites, and user experience, i truly enjoy working with businesses that aim to stand out and present their best image. Let's build something incredible together!",
+      text: "With more than 2 years of experience in design and web development, i focus on branding, high-end websites, and user experience, i truly enjoy working with businesses that aim to stand out and present their best image. Let's build something incredible together!",
       contactBtn: "Contact Me",
     },
     services: {
@@ -168,7 +168,7 @@ export const TRANSLATIONS: Record<Language, ContentTranslation> = {
     },
     about: {
       heading: "Sobre mí",
-      text: "Con más de cinco años de experiencia en diseño y desarrollo web, me enfoco en branding, sitios web de alta gama y experiencia de usuario. Disfruto trabajar con marcas que buscan destacar y presentar su mejor versión digital. ¡Construyamos algo increíble juntos!",
+      text: "Con más de 2 años de experiencia en diseño y desarrollo web, me enfoco en branding, sitios web de alta gama y experiencia de usuario. Disfruto trabajar con marcas que buscan destacar y presentar su mejor versión digital. ¡Construyamos algo increíble juntos!",
       contactBtn: "Contáctame",
     },
     services: {
