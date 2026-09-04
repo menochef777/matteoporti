@@ -1,50 +1,41 @@
 .scroll-stack-scroller {
   position: relative;
   width: 100%;
-  height: 100%;
-  overflow-y: visible;
-  overflow-x: visible;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  will-change: scroll-position;
 }
 
 .scroll-stack-inner {
-  padding: 2rem 0 10rem;
-  width: 100%;
-}
-
-.scroll-stack-card-wrapper {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-bottom: 4rem;
+  width: 100%;
 }
 
 .scroll-stack-card {
-  transform-origin: top center;
-  will-change: transform, filter;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  position: sticky;
   width: 100%;
-  margin: 20px 0;
-  padding: 2.5rem 2rem;
-  border-radius: 32px;
+  padding: 2.25rem 1.75rem;
+  border-radius: 28px;
   box-sizing: border-box;
-  -webkit-transform: translateZ(0);
+  transform-origin: center top;
+  will-change: transform;
   transform: translateZ(0);
-  position: relative;
+  -webkit-transform: translateZ(0);
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 @media (min-width: 640px) {
   .scroll-stack-card {
-    padding: 3.5rem 3rem;
-    border-radius: 40px;
+    padding: 3rem 2.5rem;
+    border-radius: 36px;
   }
 }
 
-.scroll-stack-end {
-  width: 100%;
-  height: 1px;
+@media (min-width: 1024px) {
+  .scroll-stack-card {
+    padding: 3.5rem 3rem;
+    border-radius: 40px;
+  }
 }

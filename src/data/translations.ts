@@ -17,6 +17,8 @@ export interface ContentTranslation {
     greeting: string;
     subtitle: string;
     contactBtn: string;
+    dragHintMobile: string;
+    dragHintDesktop: string;
   };
   about: {
     heading: string;
@@ -47,6 +49,8 @@ export const TRANSLATIONS: Record<Language, ContentTranslation> = {
       greeting: "Olá, sou o Matteo",
       subtitle: "um criador de websites focado em criar projetos marcantes e inesquecíveis",
       contactBtn: "Fale Comigo",
+      dragHintMobile: "Arraste para girar a cabeça",
+      dragHintDesktop: "Mova o cursor para interagir",
     },
     about: {
       heading: "Sobre mim",
@@ -106,6 +110,8 @@ export const TRANSLATIONS: Record<Language, ContentTranslation> = {
       greeting: "Hi, I’m Matteo",
       subtitle: "a website creator driven by crafting striking and unforgettable projects",
       contactBtn: "Contact Me",
+      dragHintMobile: "Swipe to turn head",
+      dragHintDesktop: "Move cursor to interact",
     },
     about: {
       heading: "About me",
@@ -158,13 +164,15 @@ export const TRANSLATIONS: Record<Language, ContentTranslation> = {
     nav: {
       about: "Sobre mí",
       services: "Servicios",
-      projects: "Proyectos",
+      projects: "Projetos",
       contact: "Contacto",
     },
     hero: {
       greeting: "Hola, soy Matteo",
       subtitle: "un creador de sitios web enfocado en crear proyectos impactantes e inolvidables",
       contactBtn: "Contáctame",
+      dragHintMobile: "Desliza para girar la cabeza",
+      dragHintDesktop: "Mueve el cursor para interactuar",
     },
     about: {
       heading: "Sobre mí",
