@@ -12,6 +12,7 @@ export interface Project {
 }
 
 import characterFrontImg from "../assets/character-front.jpg";
+import hero916Img from "../assets/hero916.jpeg";
 import characterBackImg from "../assets/character-back.png";
 
 export const CONTACT_INFO = {
@@ -21,6 +22,7 @@ export const CONTACT_INFO = {
 
 export const HERO_ASSETS = {
   portrait: characterFrontImg,
+  mobilePortrait: hero916Img,
 };
 
 export const PROJECTS_ASSETS = {
