@@ -1,83 +1,49 @@
-import React, { useRef, useEffect } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useSpring,
-  useMotionValue,
-} from "framer-motion";
+import React, { useRef, useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Navbar } from "./Navbar";
-import { HERO_ASSETS } from "../data/portfolioData";
-import heroMobileVideo from "../assets/herovideoaguia.mp4";
+import { ContactButton } from "./ContactButton";
+import { useLanguage } from "../context/useLanguage";
+
+const DESKTOP_VIDEO_URL =
+  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_083515_290e5a10-0b95-41af-a5e2-32b6389baa4d.mp4";
+const MOBILE_VIDEO_URL = "/herovideoaguia.mp4";
 
 export const HeroSection: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const mobileVideoRef = useRef<HTMLVideoElement>(null);
+  const { t } = useLanguage();
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-  // --- MOBILE TOUCH SCRUB STATE & REFS ---
-  const isSeekingRef = useRef(false);
-  const targetTimeRef = useRef(0);
-  const startTouchXRef = useRef<number | null>(null);
-  const startTouchYRef = useRef<number | null>(null);
-  const lastTouchXRef = useRef<number | null>(null);
-  const isHorizontalDragRef = useRef<boolean | null>(null);
-
-  // --- DESKTOP MOUSE PARALLAX & SCROLL ---
-  const rawX = useMotionValue(0);
-  const rawY = useMotionValue(0);
-  const mouseSpring = { stiffness: 60, damping: 20 };
-  const smoothX = useSpring(rawX, mouseSpring);
-  const smoothY = useSpring(rawY, mouseSpring);
-
-  const posX = useTransform(smoothX, [-1, 1], [-14, 14]);
-  const posY = useTransform(smoothY, [-1, 1], [-10, 10]);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
+  // Detect mobile device breakpoint on mount (avoids loading both videos simultaneously)
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
   });
 
-  const rawScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
-  const rawOpacity = useTransform(scrollYProgress, [0, 0.8, 1], [1, 0.6, 0.3]);
-
-  const scrollSpring = { stiffness: 90, damping: 22 };
-  const scale = useSpring(rawScale, scrollSpring);
-  const opacity = useSpring(rawOpacity, scrollSpring);
-
-  // Desktop Mouse move listener
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const { innerWidth, innerHeight } = window;
-      const normX = (e.clientX / innerWidth) * 2 - 1;
-      const normY = (e.clientY / innerHeight) * 2 - 1;
-      rawX.set(Math.max(-1, Math.min(1, normX)));
-      rawY.set(Math.max(-1, Math.min(1, normY)));
-    };
+    const mql = window.matchMedia("(max-width: 767px)");
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
 
-    const handleMouseLeave = () => {
-      rawX.set(0);
-      rawY.set(0);
-    };
+  // --- SCRUBBING ENGINE (DESKTOP MOUSE & MOBILE TOUCH) ---
+  const isSeekingRef = useRef(false);
+  const targetTimeRef = useRef(0);
+  const lastXRef = useRef<number | null>(null);
+  const startXRef = useRef<number | null>(null);
+  const startYRef = useRef<number | null>(null);
+  const isHorizontalDragRef = useRef<boolean | null>(null);
 
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    document.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, [rawX, rawY]);
-
-  // Mobile Video Touch Scrub Setup with iOS first-frame support
+  // Setup video initialization & seek synchronization
   useEffect(() => {
-    const video = mobileVideoRef.current;
+    const video = videoRef.current;
     if (!video) return;
 
-    // Decode first frame cleanly
+    video.pause();
+    video.currentTime = 0;
+
     const handleReady = () => {
-      if (video.currentTime === 0) {
-        video.currentTime = 0.001;
-      }
       video.pause();
     };
 
@@ -93,7 +59,7 @@ export const HeroSection: React.FC = () => {
     };
     video.addEventListener("seeked", handleSeeked);
 
-    // Frame-sync loop for smooth timeline updates
+    // Smooth animation frame loop
     let rafId: number;
     const syncTime = () => {
       if (video && !isSeekingRef.current && video.duration) {
@@ -113,115 +79,127 @@ export const HeroSection: React.FC = () => {
       video.removeEventListener("loadeddata", handleReady);
       video.removeEventListener("seeked", handleSeeked);
     };
-  }, []);
+  }, [isMobile]);
 
-  // Touch Handlers for Mobile Video Scrubbing
+  // Desktop Mouse Scrubbing
+  useEffect(() => {
+    if (isMobile) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const video = videoRef.current;
+      if (!video || !video.duration || isNaN(video.duration)) return;
+
+      if (lastXRef.current === null) {
+        lastXRef.current = e.clientX;
+        return;
+      }
+
+      const deltaX = e.clientX - lastXRef.current;
+      lastXRef.current = e.clientX;
+
+      const sensitivity = (video.duration / window.innerWidth) * 0.8;
+      let nextTime = targetTimeRef.current + deltaX * sensitivity;
+      nextTime = Math.max(0, Math.min(video.duration, nextTime));
+      targetTimeRef.current = nextTime;
+
+      if (!isSeekingRef.current) {
+        isSeekingRef.current = true;
+        video.currentTime = nextTime;
+      }
+    };
+
+    const handleMouseLeave = () => {
+      lastXRef.current = null;
+    };
+
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    document.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, [isMobile]);
+
+  // Mobile Touch Scrubbing Handlers
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     const touch = e.touches[0];
     if (!touch) return;
-    startTouchXRef.current = touch.clientX;
-    startTouchYRef.current = touch.clientY;
-    lastTouchXRef.current = touch.clientX;
+    startXRef.current = touch.clientX;
+    startYRef.current = touch.clientY;
+    lastXRef.current = touch.clientX;
     isHorizontalDragRef.current = null;
   };
 
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     const touch = e.touches[0];
-    const video = mobileVideoRef.current;
+    const video = videoRef.current;
     if (!touch || !video || !video.duration || isNaN(video.duration)) return;
 
     const currentX = touch.clientX;
     const currentY = touch.clientY;
 
-    if (startTouchXRef.current === null || startTouchYRef.current === null) {
-      startTouchXRef.current = currentX;
-      startTouchYRef.current = currentY;
-      lastTouchXRef.current = currentX;
+    if (startXRef.current === null || startYRef.current === null) {
+      startXRef.current = currentX;
+      startYRef.current = currentY;
+      lastXRef.current = currentX;
       return;
     }
 
-    const diffX = currentX - startTouchXRef.current;
-    const diffY = currentY - startTouchYRef.current;
+    const diffX = currentX - startXRef.current;
+    const diffY = currentY - startYRef.current;
 
-    // Detect horizontal vs vertical gesture intent
+    // Detect horizontal vs vertical intent
     if (isHorizontalDragRef.current === null) {
       if (Math.abs(diffX) > 6 || Math.abs(diffY) > 6) {
         isHorizontalDragRef.current = Math.abs(diffX) > Math.abs(diffY);
       }
     }
 
-    // Allow normal vertical page scrolling
+    // Preserve normal vertical page scrolling
     if (isHorizontalDragRef.current === false) return;
 
-    // Scrub video on horizontal swipe
-    if (lastTouchXRef.current !== null) {
-      const deltaX = currentX - lastTouchXRef.current;
-      // Arrastar para a direita (deltaX > 0) -> avança; Arrastar para a esquerda (deltaX < 0) -> volta
+    if (lastXRef.current !== null) {
+      const deltaX = currentX - lastXRef.current;
       const sensitivity = (video.duration / window.innerWidth) * 0.9;
       let nextTime = targetTimeRef.current + deltaX * sensitivity;
       nextTime = Math.max(0, Math.min(video.duration, nextTime));
       targetTimeRef.current = nextTime;
     }
 
-    lastTouchXRef.current = currentX;
+    lastXRef.current = currentX;
   };
 
   const handleTouchEnd = () => {
-    startTouchXRef.current = null;
-    startTouchYRef.current = null;
-    lastTouchXRef.current = null;
+    startXRef.current = null;
+    startYRef.current = null;
+    lastXRef.current = null;
     isHorizontalDragRef.current = null;
   };
+
+  const currentVideoSrc = isMobile ? MOBILE_VIDEO_URL : DESKTOP_VIDEO_URL;
 
   return (
     <section
       id="hero"
-      ref={containerRef}
-      className="relative w-full h-screen min-h-[100svh] min-h-[100dvh] bg-black overflow-hidden flex flex-col justify-between select-none"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
+      className="relative w-full min-h-[100svh] min-h-[100dvh] flex flex-col justify-between overflow-hidden bg-black select-none touch-pan-y"
     >
-      {/* ========================================================================= */}
-      {/* 01: MOBILE ONLY — 9:16 INTERACTIVE TOUCH-SCRUBBED EAGLE VIDEO             */}
-      {/* ========================================================================= */}
-      <div
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onTouchCancel={handleTouchEnd}
-        className="block md:hidden absolute inset-0 w-full h-full z-0 touch-pan-y"
-      >
-        <video
-          ref={mobileVideoRef}
-          src={`${heroMobileVideo}#t=0.001`}
-          poster={HERO_ASSETS.portrait}
-          playsInline
-          muted
-          preload="auto"
-          className="w-full h-full object-cover object-center pointer-events-none select-none"
-        />
-      </div>
+      {/* 01: Interactive Eagle Video Background (Only requested asset loaded) */}
+      <video
+        ref={videoRef}
+        key={currentVideoSrc}
+        src={currentVideoSrc}
+        playsInline
+        muted
+        preload="metadata"
+        className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none z-0"
+      />
 
-      {/* ========================================================================= */}
-      {/* 02: DESKTOP ONLY — 3D FRONT CHARACTER WITH MOUSE PARALLAX & SCROLL MOTION  */}
-      {/* ========================================================================= */}
-      <motion.div
-        style={{
-          scale,
-          opacity,
-          x: posX,
-          y: posY,
-        }}
-        className="hidden md:flex absolute inset-0 w-full h-full items-center justify-center pointer-events-none z-0"
-      >
-        <img
-          src={HERO_ASSETS.portrait}
-          alt="Matteo 3D Character Front"
-          className="w-full h-full object-cover select-none pointer-events-none scale-[1.03]"
-          draggable={false}
-          loading="eager"
-        />
-      </motion.div>
-
-      {/* 03: Dot Grid Overlay */}
+      {/* 02: Dot Grid Overlay */}
       <div
         style={{
           backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
@@ -230,17 +208,62 @@ export const HeroSection: React.FC = () => {
         className="absolute inset-0 opacity-[0.04] pointer-events-none z-10"
       />
 
-      {/* 04: Top & Bottom Seamless Dark Gradients */}
+      {/* 03: Top & Bottom Seamless Dark Gradients */}
       <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none z-10" />
       <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-[#0C0C0C] via-[#0C0C0C]/80 to-transparent pointer-events-none z-10" />
 
-      {/* 05: Fixed/Top Navigation */}
+      {/* 04: Top Navigation */}
       <div className="relative z-30 w-full">
         <Navbar />
       </div>
 
-      {/* 06: Spacer */}
-      <div className="w-full h-20 pointer-events-none relative z-20" />
+      {/* 05: Hero Title — Positioned high up and dynamically translated */}
+      <div className="w-full overflow-hidden flex justify-center z-20 pointer-events-none mt-2 sm:mt-1 md:-mt-8 lg:-mt-14">
+        <motion.div
+          key={t.hero.greeting}
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+          className="w-full text-center"
+        >
+          <h1
+            style={{ fontSize: "clamp(2.4rem, 7vw, 105px)" }}
+            className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full select-none"
+          >
+            {t.hero.greeting}
+          </h1>
+        </motion.div>
+      </div>
+
+      {/* 06: Bottom Information Bar with Subtitle and Contact Button */}
+      <div className="w-full flex justify-between items-end px-6 md:px-10 pb-7 sm:pb-8 md:pb-10 z-30 relative pointer-events-auto">
+        <motion.p
+          key={t.hero.subtitle}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.5,
+            delay: 0.15,
+            ease: [0.25, 0.1, 0.25, 1],
+          }}
+          style={{ fontSize: "clamp(0.75rem, 1.1vw, 1.15rem)" }}
+          className="uppercase font-light tracking-wide leading-snug text-[#D7E2EA] max-w-[180px] sm:max-w-[240px] md:max-w-[320px] select-none"
+        >
+          {t.hero.subtitle}
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.7,
+            delay: 0.3,
+            ease: [0.25, 0.1, 0.25, 1],
+          }}
+        >
+          <ContactButton />
+        </motion.div>
+      </div>
     </section>
   );
 };
