@@ -8,6 +8,7 @@ import {
 } from "framer-motion";
 import { Navbar } from "./Navbar";
 import { HERO_ASSETS } from "../data/portfolioData";
+import heroMobileVideo from "../assets/herovideoaguia.mp4";
 
 export const HeroSection: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -67,20 +68,21 @@ export const HeroSection: React.FC = () => {
     };
   }, [rawX, rawY]);
 
-  // Mobile Video Touch Scrub Setup
+  // Mobile Video Touch Scrub Setup with iOS first-frame support
   useEffect(() => {
     const video = mobileVideoRef.current;
     if (!video) return;
 
-    // Ensure video is paused at start
-    video.pause();
-    video.currentTime = 0;
-
-    const handleLoadedMetadata = () => {
+    // Decode first frame cleanly
+    const handleReady = () => {
+      if (video.currentTime === 0) {
+        video.currentTime = 0.001;
+      }
       video.pause();
-      video.currentTime = 0;
     };
-    video.addEventListener("loadedmetadata", handleLoadedMetadata);
+
+    video.addEventListener("loadedmetadata", handleReady);
+    video.addEventListener("loadeddata", handleReady);
 
     const handleSeeked = () => {
       isSeekingRef.current = false;
@@ -107,7 +109,8 @@ export const HeroSection: React.FC = () => {
 
     return () => {
       cancelAnimationFrame(rafId);
-      video.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      video.removeEventListener("loadedmetadata", handleReady);
+      video.removeEventListener("loadeddata", handleReady);
       video.removeEventListener("seeked", handleSeeked);
     };
   }, []);
@@ -188,7 +191,8 @@ export const HeroSection: React.FC = () => {
       >
         <video
           ref={mobileVideoRef}
-          src="/herovideoaguia.mp4"
+          src={`${heroMobileVideo}#t=0.001`}
+          poster={HERO_ASSETS.portrait}
           playsInline
           muted
           preload="auto"
@@ -240,3 +244,5 @@ export const HeroSection: React.FC = () => {
     </section>
   );
 };
+
+export default HeroSection;
