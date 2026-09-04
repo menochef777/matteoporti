@@ -1,86 +1,87 @@
 import React, { useRef, useEffect } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+  useMotionValue,
+} from "framer-motion";
 import { Navbar } from "./Navbar";
-
-import { Character3D } from "./Character3D";
 import { HERO_ASSETS } from "../data/portfolioData";
 
 export const HeroSection: React.FC = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const isSeekingRef = useRef(false);
-  const targetTimeRef = useRef(0);
-  const lastMouseXRef = useRef<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Mouse normalized positions (-1 to 1) for micro-parallax
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const mouseSpring = { stiffness: 60, damping: 20 };
+  const smoothX = useSpring(rawX, mouseSpring);
+  const smoothY = useSpring(rawY, mouseSpring);
+
+  const posX = useTransform(smoothX, [-1, 1], [-14, 14]);
+  const posY = useTransform(smoothY, [-1, 1], [-10, 10]);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+
+  // Smooth scroll animations: scale and opacity transitions on scroll down
+  const rawScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+  const rawOpacity = useTransform(scrollYProgress, [0, 0.8, 1], [1, 0.6, 0.3]);
+
+  const scrollSpring = { stiffness: 90, damping: 22 };
+  const scale = useSpring(rawScale, scrollSpring);
+  const opacity = useSpring(rawOpacity, scrollSpring);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    // Ensure video starts paused at time 0
-    video.pause();
-    video.currentTime = 0;
-
-    const handleLoadedMetadata = () => {
-      video.pause();
-    };
-    video.addEventListener("loadedmetadata", handleLoadedMetadata);
-
-    const handleSeeked = () => {
-      isSeekingRef.current = false;
-      if (Math.abs(video.currentTime - targetTimeRef.current) > 0.03) {
-        isSeekingRef.current = true;
-        video.currentTime = targetTimeRef.current;
-      }
-    };
-
-    video.addEventListener("seeked", handleSeeked);
-
     const handleMouseMove = (e: MouseEvent) => {
-      if (lastMouseXRef.current === null) {
-        lastMouseXRef.current = e.clientX;
-        return;
-      }
-      const deltaX = e.clientX - lastMouseXRef.current;
-      lastMouseXRef.current = e.clientX;
-
-      if (!video.duration || isNaN(video.duration)) return;
-
-      // scrub speed sensitivity factor 0.8 based on viewport width
-      const scrubSpeed = (video.duration / window.innerWidth) * 0.8;
-      let nextTime = targetTimeRef.current + deltaX * scrubSpeed;
-      nextTime = Math.max(0, Math.min(video.duration, nextTime));
-      targetTimeRef.current = nextTime;
-
-      if (!isSeekingRef.current) {
-        isSeekingRef.current = true;
-        video.currentTime = nextTime;
-      }
+      const { innerWidth, innerHeight } = window;
+      const normX = (e.clientX / innerWidth) * 2 - 1;
+      const normY = (e.clientY / innerHeight) * 2 - 1;
+      rawX.set(Math.max(-1, Math.min(1, normX)));
+      rawY.set(Math.max(-1, Math.min(1, normY)));
     };
 
     const handleMouseLeave = () => {
-      lastMouseXRef.current = null;
+      rawX.set(0);
+      rawY.set(0);
     };
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     document.addEventListener("mouseleave", handleMouseLeave);
 
     return () => {
-      video.removeEventListener("loadedmetadata", handleLoadedMetadata);
-      video.removeEventListener("seeked", handleSeeked);
       window.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, []);
+  }, [rawX, rawY]);
 
   return (
-    <section className="relative w-full h-screen min-h-[100svh] min-h-[100dvh] flex flex-col justify-between overflow-hidden bg-black select-none">
-      {/* 01: Mouse-Scrubbed Full Viewport Video Background */}
-      <video
-        ref={videoRef}
-        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_083515_290e5a10-0b95-41af-a5e2-32b6389baa4d.mp4"
-        playsInline
-        muted
-        preload="auto"
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
-      />
+    <section
+      id="hero"
+      ref={containerRef}
+      className="relative w-full h-screen min-h-[100svh] min-h-[100dvh] bg-black overflow-hidden flex flex-col justify-between select-none"
+    >
+      {/* 01: 3D Character Front View Stage with Mouse Parallax & Scroll Motion */}
+      <motion.div
+        style={{
+          scale,
+          opacity,
+          x: posX,
+          y: posY,
+        }}
+        className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none z-0"
+      >
+        <img
+          src={HERO_ASSETS.portrait}
+          alt="Matteo 3D Character Front"
+          className="w-full h-full object-cover select-none pointer-events-none scale-[1.03]"
+          draggable={false}
+          loading="eager"
+        />
+      </motion.div>
 
       {/* 02: Dot Grid Overlay */}
       <div
@@ -88,27 +89,19 @@ export const HeroSection: React.FC = () => {
           backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
           backgroundSize: "24px 24px",
         }}
-        className="absolute inset-0 opacity-[0.05] pointer-events-none z-10"
+        className="absolute inset-0 opacity-[0.04] pointer-events-none z-10"
       />
 
-      {/* 03: Soft Dark Edge Vignette */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/80 pointer-events-none z-10" />
+      {/* 03: Top & Bottom Seamless Dark Gradients */}
+      <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none z-10" />
+      <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-[#0C0C0C] via-[#0C0C0C]/80 to-transparent pointer-events-none z-10" />
 
       {/* 04: Fixed/Top Navigation */}
       <div className="relative z-30 w-full">
         <Navbar />
       </div>
 
-      {/* 05: Central 3D Front Character with Mouse Parallax & 360 Spin */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:top-auto md:translate-y-0 md:bottom-2 z-20 w-[340px] sm:w-[440px] md:w-[540px] lg:w-[640px] xl:w-[720px] max-w-[95vw] pointer-events-none">
-        <Character3D
-          src={HERO_ASSETS.portrait}
-          alt="Matteo 3D Character Front"
-          className="w-full"
-        />
-      </div>
-
-      {/* 06: Spacer to maintain full-screen feel */}
+      {/* 05: Spacer */}
       <div className="w-full h-20 pointer-events-none relative z-20" />
     </section>
   );
