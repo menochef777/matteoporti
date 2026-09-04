@@ -1,5 +1,6 @@
 import React from "react";
 import { useLanguage } from "../context/useLanguage";
+import { CONTACT_INFO } from "../data/portfolioData";
 
 interface ContactButtonProps {
   className?: string;
@@ -17,13 +18,15 @@ export const ContactButton: React.FC<ContactButtonProps> = ({
 
   return (
     <a
-      href="#contact"
+      href={CONTACT_INFO.whatsappUrl}
+      target="_blank"
+      rel="noopener noreferrer"
       onClick={onClick}
       style={{
         background:
-          "linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)",
+          "linear-gradient(123deg, #1C1304 7%, #D97706 37%, #B45309 72%, #F59E0B 100%)",
         boxShadow:
-          "0px 4px 4px rgba(181, 1, 167, 0.25), 4px 4px 12px #7721B1 inset",
+          "0px 4px 14px rgba(245, 158, 11, 0.35), 2px 2px 10px #D97706 inset",
         outline: "2px solid #FFFFFF",
         outlineOffset: "-3px",
       }}

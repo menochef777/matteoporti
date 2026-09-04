@@ -11,8 +11,21 @@ export interface Project {
   images: [string, string, string]; // [leftTop, leftBottom, rightTall]
 }
 
+import characterFrontImg from "../assets/character-front.jpg";
+import characterBackImg from "../assets/character-back.png";
+
+export const CONTACT_INFO = {
+  phone: "+1 289 472 2644",
+  whatsappUrl: "https://wa.me/12894722644",
+};
+
 export const HERO_ASSETS = {
-  portrait: "/matteo-portrait.png",
+  portrait: characterFrontImg,
+};
+
+export const PROJECTS_ASSETS = {
+  characterBack: characterBackImg,
+  llama: characterBackImg,
 };
 
 export const MARQUEE_ROW_1 = [

@@ -3,14 +3,16 @@ import { motion } from "framer-motion";
 import { useLanguage } from "../context/useLanguage";
 import type { Language } from "../data/translations";
 
+import { CONTACT_INFO } from "../data/portfolioData";
+
 export const Navbar: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
 
   const navItems = [
-    { label: t.nav.about, href: "#about" },
-    { label: t.nav.services, href: "#services" },
-    { label: t.nav.projects, href: "#projects" },
-    { label: t.nav.contact, href: "#contact" },
+    { label: t.nav.about, href: "#about", external: false },
+    { label: t.nav.services, href: "#services", external: false },
+    { label: t.nav.projects, href: "#projects", external: false },
+    { label: t.nav.contact, href: CONTACT_INFO.whatsappUrl, external: true },
   ];
 
   const languages: Language[] = ["pt", "en", "es"];
@@ -27,8 +29,10 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center gap-5 sm:gap-8 md:gap-12">
           {navItems.map((item) => (
             <a
-              key={item.href}
+              key={item.label}
               href={item.href}
+              target={item.external ? "_blank" : undefined}
+              rel={item.external ? "noopener noreferrer" : undefined}
               className="uppercase font-medium tracking-wider text-[#D7E2EA] text-xs sm:text-sm md:text-[0.95rem] lg:text-[1.05rem] transition-opacity duration-200 hover:opacity-70"
             >
               {item.label}
