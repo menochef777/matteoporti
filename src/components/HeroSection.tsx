@@ -7,12 +7,9 @@ import {
   useScroll,
 } from "framer-motion";
 import { Navbar } from "./Navbar";
-import { ContactButton } from "./ContactButton";
 import { HERO_ASSETS } from "../data/portfolioData";
-import { useLanguage } from "../context/useLanguage";
 
 export const HeroSection: React.FC = () => {
-  const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Responsive device check
@@ -63,8 +60,8 @@ export const HeroSection: React.FC = () => {
 
     const handleMouseMove = (e: MouseEvent) => {
       const { innerWidth, innerHeight } = window;
-      const x = (e.clientX / innerWidth) * 2 - 1; // -1 (left) to 1 (right)
-      const y = (e.clientY / innerHeight) * 2 - 1; // -1 (top) to 1 (bottom)
+      const x = (e.clientX / innerWidth) * 2 - 1;
+      const y = (e.clientY / innerHeight) * 2 - 1;
       normX.set(Math.max(-1, Math.min(1, x)));
       normY.set(Math.max(-1, Math.min(1, y)));
     };
@@ -124,17 +121,16 @@ export const HeroSection: React.FC = () => {
     if (isHorizontalDragRef.current === false) return;
 
     // Map horizontal swipe across screen width to normalized [-1, 1]
-    const dragRatio = (diffX / (window.innerWidth * 0.45));
+    const dragRatio = diffX / (window.innerWidth * 0.45);
     const targetNormX = Math.max(-1, Math.min(1, currentDragValRef.current + dragRatio));
     normX.set(targetNormX);
 
     // Minor vertical gaze response
-    const verticalRatio = (diffY / (window.innerHeight * 0.4));
+    const verticalRatio = diffY / (window.innerHeight * 0.4);
     normY.set(Math.max(-0.5, Math.min(0.5, verticalRatio)));
   };
 
   const handleTouchEnd = () => {
-    // Smoothly return head to center
     normX.set(0);
     normY.set(0);
     currentDragValRef.current = 0;
@@ -158,7 +154,7 @@ export const HeroSection: React.FC = () => {
       style={{ perspective: 1200 }}
       className="relative w-full h-screen min-h-[100svh] min-h-[100dvh] bg-black overflow-hidden flex flex-col justify-between select-none touch-pan-y"
     >
-      {/* 01: 3D Eagle Head/Neck Interactive Stage (Lightweight, 60fps GPU Accelerated) */}
+      {/* 01: 3D Eagle Head/Neck Interactive Stage */}
       <motion.div
         style={{
           scale: smoothScale,
@@ -204,53 +200,8 @@ export const HeroSection: React.FC = () => {
         <Navbar />
       </div>
 
-      {/* 06: Hero Title — Positioned high up and dynamically translated */}
-      <div className="w-full overflow-hidden flex justify-center z-20 pointer-events-none mt-2 sm:mt-1 md:-mt-8 lg:-mt-14">
-        <motion.div
-          key={t.hero.greeting}
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-          className="w-full text-center"
-        >
-          <h1
-            style={{ fontSize: "clamp(2.4rem, 7vw, 105px)" }}
-            className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full select-none"
-          >
-            {t.hero.greeting}
-          </h1>
-        </motion.div>
-      </div>
-
-      {/* 07: Bottom Information Bar with Subtitle and Contact Button */}
-      <div className="w-full flex justify-between items-end px-6 md:px-10 pb-7 sm:pb-8 md:pb-10 z-30 relative pointer-events-auto">
-        <motion.p
-          key={t.hero.subtitle}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.5,
-            delay: 0.15,
-            ease: [0.25, 0.1, 0.25, 1],
-          }}
-          style={{ fontSize: "clamp(0.75rem, 1.1vw, 1.15rem)" }}
-          className="uppercase font-light tracking-wide leading-snug text-[#D7E2EA] max-w-[180px] sm:max-w-[240px] md:max-w-[320px] select-none"
-        >
-          {t.hero.subtitle}
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.7,
-            delay: 0.3,
-            ease: [0.25, 0.1, 0.25, 1],
-          }}
-        >
-          <ContactButton />
-        </motion.div>
-      </div>
+      {/* 06: Bottom Spacer */}
+      <div className="w-full h-20 pointer-events-none relative z-20" />
     </section>
   );
 };
